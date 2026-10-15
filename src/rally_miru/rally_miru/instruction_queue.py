@@ -13,14 +13,20 @@ class InstructionQueue:
         self.ready = deque()
 
     def add(self, instruction):
+        if instruction.instruction_id <= self.last_id:
+            return False
+        self.ready.append(instruction)
+        self.last_id = instruction.instruction_id
+        return True
         # Masukkan instruksi ke antrean, tapi abaikan jika id-nya tidak lebih besar dari self.last_id
         # Return True jika diterima, False jika diabaikan
-        return False
 
     def pop(self):
-        # Ambil instruksi paling lama di antrean, atau return None jika kosong
-        return None
+        if not self.ready:
+            return None
+        return self.ready.popleft()
+            # Ambil instruksi paling lama di antrean, atau return None jika kosong
 
     def __len__(self):
         # Jumlah instruksi di antrean
-        return 0
+        return len(self.ready)
