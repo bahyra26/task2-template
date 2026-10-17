@@ -3,7 +3,7 @@
 |    NRP     |           Nama             | Bagian             |
 | :--------: |       :------------:       | :----------------: |
 | 5027261073 | Rayyan Ahmad Bahy Rachmandika   | Miru               |
-| 5025261056 | Haidar Furwan Atsaqofa   | Navigator          |
+| 5025261056 | Haidar Furqan Atsaqofa   | Navigator          |
 
 # Tugas ROS2 - Reli Miru
 
