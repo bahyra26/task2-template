@@ -67,12 +67,19 @@ class MiruNode:
         self.target_heading = 0.0
 
         # TODO: TASK A - Subscribe ke INSTRUCTION_TOPIC dengan callback on_instruction.
-
+        self.node.create_subscription(
+            Instruction, INSTRUCTION_TOPIC, self.on_instruction, 10)
+        
         # TODO: TASK B - Buat publisher untuk CMD_VEL_TOPIC dan subscriber untuk POSE_TOPIC dengan callback on_pose.
-        self.cmd_vel_publisher = None
+        self.cmd_vel_publisher = self.node.create_publisher(Twist, CMD_VEL_TOPIC, 10)
+        self.node.create_subscription(Pose, POSE_TOPIC, self.on_pose, 10)
 
         # TODO: TASK C - Daftarkan parameter SPEED_PARAM dengan on_parameter_change,
         # lalu subscribe ke RACE_STATE_TOPIC dengan callback on_race_state.
+        self.node.declare_parameter(SPEED_PARAM, 1.0)
+        self.node.add_on_set_parameters_callback(self.on_parameter_change)
+        self.node.create_subscription(
+            RaceState, RACE_STATE_TOPIC, self.on_race_state, 10)
 
         # TODO: TASK F - Buat publisher untuk STATUS_TOPIC dan timer yang memanggil
         # publish_status tiap STATUS_PERIOD.
@@ -83,29 +90,42 @@ class MiruNode:
 
     # TODO: TASK A
     def on_instruction(self, msg):
+        accepted = self.queue.add(
+            QueuedInstruction(msg.id, msg.distance, msg.turn))
+        if accepted:
+            self.node.get_logger().info (
+                f'instruksi {msg.id}: maju {msg.distance}, {TURN_NAMES[msg.turn]}'
+            )
+        else :
+            self.node.get_logger().debug (f'instruksi {msg.id} diabaikan')
         # Masukkan instruksi ke self.queue.
         # Jika diterima, tampilkan log 'instruksi N: maju D, <nama belokan>' (lihat TURN_NAMES). Jika
         # diabaikan, cukup log debug.
-        pass
 
     # TODO: TASK B
     def on_pose(self, msg):
+        self.pose = msg
         # Simpan pose terbaru di self.pose.
-        pass
 
     def publish_velocity(self, linear, angular):
+        twist = Twist()
+        twist.linear.x = float(linear)
+        twist.angular.z = float (angular)
+        self.cmd_vel_publisher.publish(twist)
         # Kirim satu Twist: linear.x untuk maju, angular.z untuk berputar.
-        pass
 
     # TODO: TASK C
     def on_race_state(self, msg):
+        self.race_state = msg.state
         # Simpan status lomba terbaru di self.race_state.
-        pass
 
     def get_speed(self):
         return self.node.get_parameter(SPEED_PARAM).value
 
     def on_parameter_change(self, parameters):
+        for p in parameters:
+            if p.name == SPEED_PARAM and not (MIN_SPEED <= p.value <= MAX_SPEED):
+                return SetParametersResult(successful=False)
         # Tolak speed di luar MIN_SPEED sampai MAX_SPEED, selain itu terima.
         return SetParametersResult(successful=True)
 
