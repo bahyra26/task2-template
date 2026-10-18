@@ -131,14 +131,23 @@ class MiruNode:
 
     # TODO: TASK D
     def start_drive(self, cells):
+        self.target_x, self.target_y = target_point(
+            self.planned_x, self.planned_y, self.planned_heading, cells
+        )
         # Hitung titik tujuan `cells` kotak di depan posisi RENCANA (planned_x, planned_y),
         # lalu simpan di self.target_x dan self.target_y.
-        pass
-
+        
     def drive_step(self):
+        rem = remaining_distance(
+        self.pose.x, self.pose.y, self.planned_heading, self.target_x, self.target_y
+        )
         # Jika sisa jarak ke target sudah 0 atau negatif, hentikan kura-kura dan return True.
         # Jika belum, maju dengan self.get_speed() dan return False.
-        return True
+        if rem <= 0.0:
+            self.publish_velocity(0.0, 0.0)
+            return True
+        self.publish_velocity(self.get_speed(), 0.0)
+        return False
 
     # TODO: TASK E
     def start_turn(self, turn):
