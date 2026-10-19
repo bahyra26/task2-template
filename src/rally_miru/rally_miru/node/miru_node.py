@@ -151,14 +151,20 @@ class MiruNode:
 
     # TODO: TASK E
     def start_turn(self, turn):
+        self.target_heading = turn_target(self.planned_heading, turn)
         # Hitung arah tujuan setelah belok dari planned_heading, lalu simpan di self.target_heading.
-        pass
 
     def turn_step(self):
+        error = wrap_angle(self.target_heading - self.pose.theta)
+        rate = turn_rate(error)
+        if rate == 0.0:
+            self.publish_velocity(0.0, 0.0)
+            return True
+        self.publish_velocity(0.0, rate)
+        return False
         # Hitung selisih self.target_heading dan self.pose.theta, lalu minta kecepatan putarnya ke turn_rate.
         # Jika sudah pas, hentikan kura-kura dan return True. Jika belum, putar dan return
         # False.
-        return True
 
     # TODO: TASK F
     def publish_status(self):
@@ -233,6 +239,7 @@ class MiruNode:
             self.node.get_logger().info(f'instruksi {self.current_id} selesai, finis')
             self.set_state(State.FINISHED)
         else:
+            print("kesel mlaku")
             self.start_turn(self.current.turn)
             self.set_state(State.TURNING)
 

@@ -34,9 +34,13 @@ def remaining_distance(x, y, heading, target_x, target_y):
 
 # TODO: TASK E
 def turn_target(heading, turn):
+    if turn == Instruction.TURN_LEFT:
+        heading += math.pi / 2
+    elif turn == Instruction.TURN_RIGHT:
+        heading -= math.pi / 2 
     # Hitung arah setelah belok 90 derajat dari `heading` (kiri menambah sudut, kanan mengurangi),
     # lalu rapikan dengan wrap_angle.
-    return heading
+    return wrap_angle(heading)
 
 # Provided, do not modify
 def turn_rate(error):
