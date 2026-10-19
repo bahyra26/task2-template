@@ -239,7 +239,6 @@ class MiruNode:
             self.node.get_logger().info(f'instruksi {self.current_id} selesai, finis')
             self.set_state(State.FINISHED)
         else:
-            print("kesel mlaku")
             self.start_turn(self.current.turn)
             self.set_state(State.TURNING)
 
