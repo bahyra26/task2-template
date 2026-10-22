@@ -83,7 +83,9 @@ class MiruNode:
 
         # TODO: TASK F - Buat publisher untuk STATUS_TOPIC dan timer yang memanggil
         # publish_status tiap STATUS_PERIOD.
-        self.status_publisher = None
+        self.status_publisher = self.node.create_publisher(DriverStatus, STATUS_TOPIC, 10)
+
+        self.timer = self.node.create_timer(STATUS_PERIOD, self.publish_status)
 
         self.timer = self.node.create_timer(UPDATE_PERIOD, self.update)
         self.node.get_logger().info('miru siap')
@@ -170,7 +172,18 @@ class MiruNode:
     def publish_status(self):
         # Kirim satu DriverStatus berisi state, pose, current_id, done_id, dan jumlah antrean.
         # Jangan kirim jika pose pertama belum datang.
-        pass
+        if self.pose is None:
+            return
+
+        msg = DriverStatus()
+        msg.state = self.state.value
+        msg.x = float (self.pose.x)
+        msg.y = float (self.pose.y)
+        msg.theta = float(self.pose.theta)
+        msg.current_id = self.current_id
+        msg.done_id = self.done_id
+        msg.queued = len(self.queue)
+        self.status_publisher.publish(msg)
 
     # Provided, do not modify
     def set_state(self, new_state):
