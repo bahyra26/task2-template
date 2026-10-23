@@ -298,62 +298,55 @@ Masukkan screenshot hasil eksekusi program atau proses yang relevan, termasuk ta
 ## A. Menerima Peta
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Membuat subscriber pada topik /race/map dengan tipe pesan RaceMap dan QoS transient_local agar data peta tetap diterima meskipun node navigator aktif belakangan. Data mentah peta kemudian diproses dan dikonversi menjadi objek GridMap untuk memudahkan perencanaan rute.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+<img width="1167" height="127" alt="MenerimaPeta" src="https://github.com/user-attachments/assets/cdab44c9-7cd6-4981-82ee-b1438fc0ce59" />
+
 
 ## B. Mencari Rute
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Mengimplementasikan algoritma BFS (Breadth-First Search) di dalam route.py menggunakan queue untuk menelusuri jalur terpendek dari titik awal ke finis secara sistematis, sambil memvalidasi batas grid serta menghindari rintangan batu.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+<img width="1503" height="349" alt="NavigatorB" src="https://github.com/user-attachments/assets/20df3985-aa3a-4dcd-8461-fa96110edd56" />
+
 
 ## C. Rute Menjadi Arah
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Membuat fungsi route_to_directions untuk menerjemahkan urutan koordinat sel rute menjadi daftar orientasi arah mata angin (EAST, NORTH, WEST, SOUTH) berdasarkan selisih perubahan posisi koordinat antarsel.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+<img width="1503" height="217" alt="NavigatorC" src="https://github.com/user-attachments/assets/9694c68a-c8c5-47c1-bae4-6b45b06f0bfb" />
+
 
 ## D. Arah Menjadi Instruksi
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Mengelompokkan langkah lurus berurutan melalui directions_to_instructions dengan aturan khusus: menambahkan belok berjarak 0 jika langkah awal bukan ke timur, mengubah putar balik 180° menjadi dua kali belok kiri, menetapkan TURN_NONE pada instruksi akhir, serta memberikan penomoran ID mulai dari angka 1.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+<img width="1503" height="217" alt="NavigatorD" src="https://github.com/user-attachments/assets/18dde8ba-e2bf-4914-a943-586f1e1cce1c" />
+
 
 ## E. Mengirim Instruksi
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Menghubungkan node ke topik /miru/status untuk membaca nilai done_id dari robot Miru. Berdasarkan nilai tersebut dan parameter instructions_ahead, Navigator secara otomatis mempublikasikan pesan instruksi secara bertahap ke topik /navigator/instruction.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+<img width="1503" height="217" alt="NavigatorE" src="https://github.com/user-attachments/assets/bf409264-685e-4555-9dc2-16699144390a" />
 
 ## F. Parameter instructions_ahead
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Mendeklarasikan parameter ROS instructions_ahead dengan rentang valid 1 sampai 5. Fungsi callback on_parameter_change diimplementasikan untuk memvalidasi input secara ketat serta langsung memicu pengiriman instruksi ulang apabila parameter diubah secara dinamis.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+<img width="1503" height="115" alt="NavigatorF" src="https://github.com/user-attachments/assets/767026b4-8326-452e-85fd-a80c39d7b9ff" />
+
 
 ## G. Bonus: DFS lawan BFS
 
