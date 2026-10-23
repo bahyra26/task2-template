@@ -274,13 +274,10 @@ Dibuat publisher status dan timer 20 kali per detik yang mengirim state, posisi,
 
 ## G. Bonus: Berhenti Lebih Tepat
 
-### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Mengubah parameter kecepatan minimum pada fungsi drive_step di file Miru dari 0.15 m/s menjadi 0.05 m/s dengan rumus max(0.05, rem * 3.0) agar kura-kura mulai mengerem lebih awal dan melambat secara bertahap (deceleration profile) saat mendekati target.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan, termasuk tabel hasil ukur.
+![Bukti Perlambatan Kecepatan](screenshots/task2g.png)
 
 # Task 3 - Navigator
 
