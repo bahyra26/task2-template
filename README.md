@@ -205,8 +205,7 @@ Note : Di kerangka awal, wasit akan terus mencetak `menunggu miru...`, karena lo
 
 Tulis laporan di template berikut! Tidak perlu terlalu teknis sampai kode atau nama fungsi, cukup jelaskan dengan kalimat sendiri.
 
-Penggunaan AI: (sebutkan bagian mana yang dibantu AI, atau tulis "tidak ada")
-
+Penggunaan AI: Claude dipakai untuk menjelaskan soal dan error lalu bantu penjelasan dandebugging task-tasknya, untuk kodenya kami jalankan dan debugging sendiri. 
 ---
 
 # Task 1 - Persiapan dan Lomba
@@ -214,74 +213,64 @@ Penggunaan AI: (sebutkan bagian mana yang dibantu AI, atau tulis "tidak ada")
 ## A. Setup Workspace
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Workspace di-build dengan `colcon build --symlink-install`, lalu di-source dengan `source install/setup.bash` di setiap terminal. Setelah itu turtlesim, wasit, navigator, dan Miru dijalankan di terminal terpisah, dan koneksinya dicek lewat `rqt_graph`. Wasit tetap mencetak "menunggu miru..." pada tahap awal karena publisher laporan Miru belum ada.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+![build](screenshots/task1a-build.png)
+![rqt_graph](screenshots/task1a-rqt-graph.png)
+
 
 # Task 2 - Miru
 
 ## A. Antrean Instruksi
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Dibuat antrean yang menyimpan instruksi dan menolak instruksi yang nomornya sama atau lebih kecil dari nomor terakhir yang diterima. Miru subscribe ke topic instruksi dan memasukkan tiap pesan ke antrean. Instruksi 1 dikirim dua kali, tetapi lognya hanya muncul sekali.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+![kirim instruksi dua kali](screenshots/task2a-kirim.png)
+![log Miru, instruksi 1 muncul sekali](screenshots/task2a-miru.png)
 
 ## B. Pose dan Perintah Gerak
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Dibuat publisher untuk perintah gerak ke `/turtle1/cmd_vel` dan subscriber untuk posisi dari `/turtle1/pose`, yang menyimpan pose terbaru. Hasilnya dicek dengan `ros2 node info /miru`.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+![node info Miru](screenshots/task2b.png)
 
 ## C. Aba-aba GO dan Parameter
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
+Miru subscribe ke status lomba untuk tahu kapan GO. Parameter `speed` didaftarkan dan nilai di luar 0,1 sampai 2,5 ditolak. Dicoba dengan `ros2 param set` untuk 3.0 (ditolak), 0.05 (ditolak), dan 2.5 (diterima).
 
--
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+![param speed](screenshots/task2c.png)
 
 ## D. Maju
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Titik tujuan dihitung dari posisi rencana, bukan posisi nyata, supaya galat tidak menumpuk antar instruksi. Kura-kura maju sampai sisa jarak ke tujuan nol atau negatif, lalu berhenti. Instruksi maju 3 kotak membuat kura-kura maju sekitar 3 m dan Miru mencetak "selesai, finis".
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+![maju](screenshots/task2d.png)
 
 ## E. Belok
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Arah tujuan dihitung dengan menambah 90 derajat untuk belok kiri atau mengurangi 90 derajat untuk belok kanan, lalu dirapikan agar tetap di rentang -π sampai π. Kura-kura berputar sampai selisih sudutnya cukup kecil. Hasilnya dicek lewat nilai `theta` (sekitar 1.57 setelah belok kiri, sekitar 0 setelah belok kanan).
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+![belok](screenshots/task2e.png)
 
 ## F. Laporan Status
 
 ### Langkah-langkah
-Jelaskan langkah-langkah yang dilakukan.
-
--
+Dibuat publisher status dan timer 20 kali per detik yang mengirim state, posisi, arah, nomor instruksi, dan jumlah antrean. Laporan tidak dikirim sebelum pose pertama datang. `ros2 topic hz /miru/status` menunjukkan sekitar 20 Hz.
 
 ### Screenshot
-Masukkan screenshot hasil eksekusi program atau proses yang relevan.
+![hz status](screenshots/task2f.png)
 
 ## G. Bonus: Berhenti Lebih Tepat
 
