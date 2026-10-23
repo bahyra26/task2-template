@@ -148,7 +148,11 @@ class MiruNode:
         if rem <= 0.0:
             self.publish_velocity(0.0, 0.0)
             return True
-        self.publish_velocity(self.get_speed(), 0.0)
+
+        speed = min(self.get_speed(), max(0.05, rem * 3.0))
+        heading_error = wrap_angle(self.planned_heading - self.pose.theta)
+        angular_correction = heading_error * 2.0
+        self.publish_velocity(speed, angular_correction)
         return False
 
     # TODO: TASK E
